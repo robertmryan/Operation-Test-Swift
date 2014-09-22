@@ -21,16 +21,53 @@ class OperationTestSwiftTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
+    func testGoodOperation() {
+        let expectation1 = self.expectationWithDescription("first expectation")
+        let expectation2 = self.expectationWithDescription("second expectation")
+
+        let queue = NSOperationQueue()
+
+        let op1 = GoodAsynchronousOperation(message: "testGoodOperation first", duration: 2.0) {
+            expectation1.fulfill()
         }
+
+        let op2 = GoodAsynchronousOperation(message: "testGoodOperation second", duration: 2.0) {
+            expectation2.fulfill()
+        }
+
+        op2.addDependency(op1)
+
+        queue.addOperation(op1)
+        queue.addOperation(op2)
+
+        self.waitForExpectationsWithTimeout(5.0, nil)
     }
-    
+
+    func testBadOperation() {
+        let expectation1 = self.expectationWithDescription("first expectation")
+        let expectation2 = self.expectationWithDescription("second expectation")
+
+        let queue = NSOperationQueue()
+
+        let op1 = BadAsynchronousOperation(message: "testBadOperation first", duration: 2.0) {
+            expectation1.fulfill()
+        }
+
+        // note, because `BadAsynchronousOperation` doesn't do the appropriate KVO,
+        // this second operation will never fire, thus the second expectation will
+        // never be fulfilled, and the `waitForExpectations` below will fail.
+
+        let op2 = BadAsynchronousOperation(message: "testBadOperation second", duration: 2.0) {
+            expectation2.fulfill()
+        }
+
+        op2.addDependency(op1)
+
+        queue.addOperation(op1)
+        queue.addOperation(op2)
+
+        // let's wait five seconds for those two operations to complete and fulfill the two expectations
+        
+        self.waitForExpectationsWithTimeout(5.0, nil)
+    }
 }
