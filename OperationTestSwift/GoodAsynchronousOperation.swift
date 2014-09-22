@@ -75,6 +75,13 @@ class GoodAsynchronousOperation: NSOperation {
             return
         }
 
+        executing = true
+
+        main()
+    }
+    
+    override func main()
+    {
         // start operation
 
         println("starting \(message)")
@@ -89,8 +96,8 @@ class GoodAsynchronousOperation: NSOperation {
 
             self.completeOperation()              // finish this operation
         }
-
+        
         // but return immediately
     }
-
+    
 }

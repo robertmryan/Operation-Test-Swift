@@ -79,6 +79,13 @@ class BadAsynchronousOperation: NSOperation {
             return
         }
 
+        executing = true
+
+        main()
+    }
+
+    override func main()
+    {
         // start operation
 
         println("starting \(message)")
