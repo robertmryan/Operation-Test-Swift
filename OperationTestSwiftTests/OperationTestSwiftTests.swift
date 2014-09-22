@@ -69,5 +69,9 @@ class OperationTestSwiftTests: XCTestCase {
         // let's wait five seconds for those two operations to complete and fulfill the two expectations
         
         self.waitForExpectationsWithTimeout(5.0, nil)
+
+        // Given this second operation would not have fired, we probably should cancel it when we clean up
+
+        queue.cancelAllOperations()
     }
 }
