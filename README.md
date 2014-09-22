@@ -15,8 +15,7 @@ writing asynchronous/concurrent operations, namely:
 
 - Set `asynchronous` (and if supporting iOS 7.1 and earlier, `concurrent`) to `true`.
 
-- When the operation starts, it completes asynchronously (i.e. after it returns from
-the `start`/`main` function.
+- When the operation starts, it completes asynchronously (i.e. does doesn't complete until after it returns from the `start`/`main` function).
 
 If you write a non-concurrent operation (or if it's a concurrent operation that happens to 
 finish before `start`/`main` finishes), the problems arising from the failure to do the
