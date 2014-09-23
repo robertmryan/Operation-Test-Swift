@@ -42,9 +42,9 @@ class GoodAsynchronousOperation: NSOperation {
         }
         set {
             if _executing != newValue {
-                self.willChangeValueForKey("isExecuting")
+                willChangeValueForKey("isExecuting")
                 _executing = newValue
-                self.didChangeValueForKey("isExecuting")
+                didChangeValueForKey("isExecuting")
             }
         }
     }
@@ -56,9 +56,9 @@ class GoodAsynchronousOperation: NSOperation {
         }
         set {
             if _finished != newValue {
-                self.willChangeValueForKey("isFinished")
+                willChangeValueForKey("isFinished")
                 _finished = newValue
-                self.didChangeValueForKey("isFinished")
+                didChangeValueForKey("isFinished")
             }
         }
     }

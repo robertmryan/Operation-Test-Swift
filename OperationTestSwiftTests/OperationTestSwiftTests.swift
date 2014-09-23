@@ -22,8 +22,8 @@ class OperationTestSwiftTests: XCTestCase {
     }
     
     func testGoodOperation() {
-        let expectation1 = self.expectationWithDescription("first expectation")
-        let expectation2 = self.expectationWithDescription("second expectation")
+        let expectation1 = expectationWithDescription("first expectation")
+        let expectation2 = expectationWithDescription("second expectation")
 
         let queue = NSOperationQueue()
 
@@ -40,12 +40,12 @@ class OperationTestSwiftTests: XCTestCase {
         queue.addOperation(op1)
         queue.addOperation(op2)
 
-        self.waitForExpectationsWithTimeout(5.0, nil)
+        waitForExpectationsWithTimeout(5.0, nil)
     }
 
     func testBadOperation() {
-        let expectation1 = self.expectationWithDescription("first expectation")
-        let expectation2 = self.expectationWithDescription("second expectation")
+        let expectation1 = expectationWithDescription("first expectation")
+        let expectation2 = expectationWithDescription("second expectation")
 
         let queue = NSOperationQueue()
 
@@ -68,7 +68,7 @@ class OperationTestSwiftTests: XCTestCase {
 
         // let's wait five seconds for those two operations to complete and fulfill the two expectations
         
-        self.waitForExpectationsWithTimeout(5.0, nil)
+        waitForExpectationsWithTimeout(5.0, nil)
 
         // Given this second operation would not have fired, we probably should cancel it when we clean up
 
