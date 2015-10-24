@@ -40,7 +40,7 @@ class OperationTestSwiftTests: XCTestCase {
         queue.addOperation(op1)
         queue.addOperation(op2)
 
-        waitForExpectationsWithTimeout(5.0, nil)
+        waitForExpectationsWithTimeout(5.0, handler: nil)
     }
 
     func testBadOperation() {
@@ -68,7 +68,7 @@ class OperationTestSwiftTests: XCTestCase {
 
         // let's wait five seconds for those two operations to complete and fulfill the two expectations
         
-        waitForExpectationsWithTimeout(5.0, nil)
+        waitForExpectationsWithTimeout(5.0, handler: nil)
 
         // Given this second operation would not have fired, we probably should cancel it when we clean up
 

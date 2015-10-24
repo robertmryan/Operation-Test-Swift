@@ -84,13 +84,13 @@ class GoodAsynchronousOperation: NSOperation {
     {
         // start operation
 
-        println("starting \(message)")
+        print("starting \(message)")
 
         // stop operation in two seconds
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(duration * Double(NSEC_PER_SEC))), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
 
-            println("finishing \(self.message)")  // report we're done
+            print("finishing \(self.message)")  // report we're done
 
             self.completion()                     // call completion closure
 
