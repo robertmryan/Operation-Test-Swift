@@ -68,7 +68,7 @@ class BadAsynchronousOperation: NSOperation {
     }
 
     func completeOperation () {
-        executing = true
+        executing = false
         finished = true
     }
 
