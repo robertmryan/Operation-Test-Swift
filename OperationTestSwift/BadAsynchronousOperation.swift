@@ -28,6 +28,8 @@ class BadAsynchronousOperation: NSOperation {
     var completion: () -> ()
     var duration: Double
 
+    private let stateLock = NSLock()
+
     init(message: String, duration: Double, completion: () -> ()) {
         self.message    = message
         self.duration   = duration
@@ -40,30 +42,38 @@ class BadAsynchronousOperation: NSOperation {
     }
 
     private var _executing: Bool = false
-    override var executing: Bool {
+    override private(set) var executing: Bool {
         get {
-            return _executing
+            return stateLock.withCriticalScope { _executing }
         }
         set {
-            if _executing != newValue {
-                willChangeValueForKey("executing")
-                _executing = newValue
-                didChangeValueForKey("executing")
+            willChangeValueForKey("executing")
+            
+            stateLock.withCriticalScope {
+                if _executing != newValue {
+                    _executing = newValue
+                }
             }
+            
+            didChangeValueForKey("executing")
         }
     }
 
     private var _finished: Bool = false;
-    override var finished: Bool {
+    override private(set) var finished: Bool {
         get {
-            return _finished
+            return stateLock.withCriticalScope { _finished }
         }
         set {
-            if _finished != newValue {
-                willChangeValueForKey("finished")
-                _finished = newValue
-                didChangeValueForKey("finished")
+            willChangeValueForKey("finished")
+            
+            stateLock.withCriticalScope {
+                if _finished != newValue {
+                    _finished = newValue
+                }
             }
+            
+            didChangeValueForKey("finished")
         }
     }
 
@@ -72,8 +82,7 @@ class BadAsynchronousOperation: NSOperation {
         finished = true
     }
 
-    override func start()
-    {
+    override func start() {
         if cancelled {
             finished = true
             return
@@ -84,8 +93,7 @@ class BadAsynchronousOperation: NSOperation {
         main()
     }
 
-    override func main()
-    {
+    override func main() {
         // start operation
 
         print("starting \(message)")
