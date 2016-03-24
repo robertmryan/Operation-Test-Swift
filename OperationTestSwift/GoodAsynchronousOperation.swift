@@ -55,7 +55,7 @@ class GoodAsynchronousOperation: NSOperation {
         }
     }
 
-    private var _finished: Bool = false;
+    private var _finished: Bool = false
     override private(set) var finished: Bool {
         get {
             return stateLock.withCriticalScope { _finished }
