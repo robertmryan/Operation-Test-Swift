@@ -3,12 +3,12 @@
 //  OperationTestSwift
 //
 //  Created by Robert Ryan on 9/22/14.
-//  Copyright (c) 2014 Robert Ryan. All rights reserved.
+//  Copyright (c) 2014-2018 Robert Ryan. All rights reserved.
 //
 
 import UIKit
 
-/// Correct implementation of "NSOperation" subclass that does post the
+/// Correct implementation of "Operation" subclass that does post the
 /// appropriate "isFinished" and "isExecuting" notification
 ///
 /// Because this posts "isFinished" and "isExecuting", this will succeed in
@@ -18,7 +18,7 @@ import UIKit
 ///
 /// Please compare this to BadAsynchronousOperation
 
-class GoodAsynchronousOperation: NSOperation {
+class GoodAsynchronousOperation: Operation {
 
     var message: String
     var completion: () -> ()
@@ -26,24 +26,24 @@ class GoodAsynchronousOperation: NSOperation {
 
     private let stateLock = NSLock()
 
-    init(message: String, duration: Double, completion: () -> ()) {
-        self.message    = message
-        self.duration   = duration
+    init(message: String, duration: Double, completion: @escaping () -> ()) {
+        self.message = message
+        self.duration = duration
         self.completion = completion
         super.init()
     }
 
-    override var asynchronous: Bool {
+    override var isAsynchronous: Bool {
         return true
     }
 
-    private var _executing: Bool = false
-    override private(set) var executing: Bool {
+    private var _executing = false
+    override var isExecuting: Bool {
         get {
             return stateLock.withCriticalScope { _executing }
         }
         set {
-            willChangeValueForKey("isExecuting")
+            willChangeValue(forKey: "isExecuting")
             
             stateLock.withCriticalScope {
                 if _executing != newValue {
@@ -51,17 +51,17 @@ class GoodAsynchronousOperation: NSOperation {
                 }
             }
 
-            didChangeValueForKey("isExecuting")
+            didChangeValue(forKey: "isExecuting")
         }
     }
 
-    private var _finished: Bool = false
-    override private(set) var finished: Bool {
+    private var _finished = false
+    override var isFinished: Bool {
         get {
             return stateLock.withCriticalScope { _finished }
         }
         set {
-            willChangeValueForKey("isFinished")
+            willChangeValue(forKey: "isFinished")
             
             stateLock.withCriticalScope {
                 if _finished != newValue {
@@ -69,43 +69,39 @@ class GoodAsynchronousOperation: NSOperation {
                 }
             }
             
-            didChangeValueForKey("isFinished")
+            didChangeValue(forKey: "isFinished")
         }
     }
 
-    func completeOperation () {
-        executing = false
-        finished = true
+    func finish () {
+        isExecuting = false
+        isFinished = true
     }
 
     override func start() {
-        if cancelled {
-            finished = true
+        if isCancelled {
+            isFinished = true
             return
         }
 
-        executing = true
+        isExecuting = true
 
         main()
     }
     
     override func main() {
         // start operation
-
-        print("starting \(message)")
-
-        // stop operation in two seconds
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(duration * Double(NSEC_PER_SEC))), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-
-            print("finishing \(self.message)")  // report we're done
-
-            self.completion()                     // call completion closure
-
-            self.completeOperation()              // finish this operation
-        }
-        
+        execute()
         // but return immediately
+    }
+    
+    func execute() {        
+        DispatchQueue.global().asyncAfter(deadline: .now() + duration) {
+            print("finishing \(self.message)") // report we're done
+            
+            self.completion() // call completion closure
+            self.finish() // finish this operation
+        }
     }
     
 }

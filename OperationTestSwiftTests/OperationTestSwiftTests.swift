@@ -3,7 +3,7 @@
 //  OperationTestSwiftTests
 //
 //  Created by Robert Ryan on 9/22/14.
-//  Copyright (c) 2014 Robert Ryan. All rights reserved.
+//  Copyright (c) 2014-2018 Robert Ryan. All rights reserved.
 //
 
 import UIKit
@@ -22,10 +22,10 @@ class OperationTestSwiftTests: XCTestCase {
     }
     
     func testGoodOperation() {
-        let expectation1 = expectationWithDescription("first expectation")
-        let expectation2 = expectationWithDescription("second expectation")
+        let expectation1 = expectation(description: "first expectation")
+        let expectation2 = expectation(description: "second expectation")
 
-        let queue = NSOperationQueue()
+        let queue = OperationQueue()
 
         let op1 = GoodAsynchronousOperation(message: "testGoodOperation first", duration: 2.0) {
             expectation1.fulfill()
@@ -40,14 +40,14 @@ class OperationTestSwiftTests: XCTestCase {
         queue.addOperation(op1)
         queue.addOperation(op2)
 
-        waitForExpectationsWithTimeout(5.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
     }
 
     func testBadOperation() {
-        let expectation1 = expectationWithDescription("first expectation")
-        let expectation2 = expectationWithDescription("second expectation")
+        let expectation1 = expectation(description: "first expectation")
+        let expectation2 = expectation(description: "second expectation")
 
-        let queue = NSOperationQueue()
+        let queue = OperationQueue()
 
         let op1 = BadAsynchronousOperation(message: "testBadOperation first", duration: 2.0) {
             expectation1.fulfill()
@@ -68,7 +68,7 @@ class OperationTestSwiftTests: XCTestCase {
 
         // let's wait five seconds for those two operations to complete and fulfill the two expectations
         
-        waitForExpectationsWithTimeout(5.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
 
         // Given this second operation would not have fired, we probably should cancel it when we clean up
 
